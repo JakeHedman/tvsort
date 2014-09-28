@@ -2,7 +2,7 @@
 
 from configobj import ConfigObj
 from guessit import guess_file_info
-from opster import command, dispatch
+from opster import command
 import os
 import re
 import shutil
@@ -69,7 +69,7 @@ def make_guess(path):
         return False
 
 def is_rar(path):
-    exts = ['.r00', '.part01.rar']
+    exts = ['.r00', '.part1.rar', '.part01.rar', '.part001.rar',]
     return any(path.lower().endswith(ext) for ext in exts)
 
 def is_video(path):
@@ -112,3 +112,5 @@ def main(path):
                 ep_name = episode_filename(guess)
                 ep_path = os.path.join(s_path, ep_name)
                 shutil.move(path, ep_path)
+
+    shutil.rmtree(root_path)

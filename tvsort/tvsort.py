@@ -15,10 +15,12 @@ def write_template_config():
     conf = ConfigObj(
         CONF_PATH,
         create_empty=True,
-        write_empty_values=True
+        write_empty_values=True,
     )
 
     conf['tv_shows_path'] = '/mnt/hdd0/plex/TV/'
+    conf['move_files'] = True
+    conf['delete_files'] = False
 
     conf.write()
 
@@ -111,6 +113,10 @@ def main(path):
                 s_path = season_path(guess)
                 ep_name = episode_filename(guess)
                 ep_path = os.path.join(s_path, ep_name)
-                shutil.move(path, ep_path)
-    if os.path.exists(root_path):
-        shutil.rmtree(root_path)
+                if CONF['move_files']:
+                    shutil.move(path, ep_path)
+                else:
+                    shutil.copy(path, ep_path)
+    if CONF['delete_files']:
+        if os.path.exists(root_path):
+            shutil.rmtree(root_path)

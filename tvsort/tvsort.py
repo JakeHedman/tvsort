@@ -112,5 +112,5 @@ def main(path):
                 ep_name = episode_filename(guess)
                 ep_path = os.path.join(s_path, ep_name)
                 shutil.move(path, ep_path)
-
-    shutil.rmtree(root_path)
+    if os.path.exists(root_path):
+        shutil.rmtree(root_path)

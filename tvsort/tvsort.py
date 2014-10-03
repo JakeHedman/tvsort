@@ -76,7 +76,7 @@ def is_rar(path):
 
 def is_video(path):
     exts = ['.mkv', '.avi', '.mp4', '.wemb', '.ogg', '.mov',
-            '.wmv', '.m4v', '.m4p', '.mpg', '.mpeg',]
+            '.wmv', '.m4v', '.m4p', '.mpg', '.mpeg', '.ogm']
     return any(path.lower().endswith(ext) for ext in exts)
 
 def get_files(path):

@@ -113,10 +113,10 @@ def main(path):
                 s_path = season_path(guess)
                 ep_name = episode_filename(guess)
                 ep_path = os.path.join(s_path, ep_name)
-                if CONF['move_files']:
+                if CONF['move_files'].lower() == "true":
                     shutil.move(path, ep_path)
                 else:
                     shutil.copy(path, ep_path)
-    if CONF['delete_files']:
+    if CONF['delete_files'].lower() == "true":
         if os.path.exists(root_path):
             shutil.rmtree(root_path)

@@ -18,7 +18,10 @@ def write_template_config():
         write_empty_values=True,
     )
 
-    conf['tv_shows_path'] = '/mnt/hdd0/plex/TV/'
+    conf['tv_shows_path'] = [
+        '/mnt/hdd0/plex/TV/',
+        '/mnt/hdd0/plex/TV/',
+    ]
     conf['move_files'] = True
     conf['delete_files'] = False
 
@@ -34,27 +37,28 @@ def get_conf():
 
 CONF = get_conf()
 
-def not_sure(path):
-    print("I'm not quite sure what {0} is".format(path))
-
 def format_show(name):
     return re.sub(r'[^A-z0-9]+', '', name.title().replace(" ", "_"))
 
 def season_path(guess):
-    tv_dir = CONF['tv_shows_path']
+    tv_dirs = CONF['tv_shows_path']
     show = format_show(guess['series'])
     season = "S" + str(guess['season']).zfill(2)
-    path = os.path.join(tv_dir, show, season)
-    if not os.path.exists(path):
-        os.makedirs(path)
-    return path
+    paths = [os.path.join(tv_dir, show, season) for tv_dir in tv_dirs]
+    for path in paths:
+        if os.path.exists(path):
+            return path
+    else:
+        os.makedirs(paths[0])
+        return paths[0]
 
 def episode_filename(guess):
-    title = format_show(guess['series']).replace("_", ".")
-    season = str(guess['season']).zfill(2)
-    episode = str(guess['episodeNumber']).zfill(2)
-    container = guess['container']
-    return "{title}.S{season}E{episode}.{container}".format(**locals())
+    return "{title}.S{season}E{episode}.{container}".format(
+        title=format_show(guess['series']).replace("_", "."),
+        season=str(guess['season']).zfill(2),
+        episode=str(guess['episodeNumber']).zfill(2),
+        container=guess['container'],
+    )
 
 def make_guess(path):
     guess = guess_file_info(path)
@@ -63,7 +67,7 @@ def make_guess(path):
         guess['season']
         guess['series']
         guess['container']
-        guess['type'] == 'episode'
+        assert guess['type'] == 'episode'
         print("Found {0}".format(episode_filename(guess)))
         return guess
     except Exception as e:

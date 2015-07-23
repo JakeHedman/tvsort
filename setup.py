@@ -20,6 +20,7 @@ setup(
     install_requires = [
         'opster',
         'configobj',
+        'guessit',
     ],
     long_description = open('README.rst').read(),
 )
